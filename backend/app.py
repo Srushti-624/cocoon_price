@@ -9,6 +9,9 @@ from flask_pymongo import PyMongo
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, verify_jwt_in_request
 from bson.objectid import ObjectId
+from dotenv import load_dotenv
+
+load_dotenv() # Load variables from .env if present
 
 app = Flask(__name__)
 CORS(app)
@@ -16,10 +19,8 @@ CORS(app)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # --- Configuration ---
-# IMPORTANT: Replace <PASSWORD> and the rest of the string with your actual MongoDB Atlas connection string
-# Note: Password special characters are URL encoded (@ -> %40)
-app.config["MONGO_URI"] = "mongodb+srv://srushti:Srushti%40123*@cluster0.po25qnk.mongodb.net/cocoon?retryWrites=true&w=majority&appName=Cluster0"
-app.config['JWT_SECRET_KEY'] = 'super-secret-key-change-this-in-production' 
+app.config["MONGO_URI"] = os.getenv("MONGO_URI")
+app.config['JWT_SECRET_KEY'] = os.getenv("JWT_SECRET_KEY", "fallback-secret-key")
 
 mongo = PyMongo(app)
 bcrypt = Bcrypt(app)
