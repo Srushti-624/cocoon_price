@@ -16,7 +16,7 @@ export default function Register() {
         setLoading(true)
         setError(null)
         try {
-            await axios.post('http://localhost:5000/register', {
+            await axios.post(import.meta.env.PROD ? '/api/register' : 'http://localhost:5000/register', {
                 username,
                 password
             })

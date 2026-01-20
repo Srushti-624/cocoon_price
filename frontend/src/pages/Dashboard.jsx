@@ -20,7 +20,8 @@ export default function Dashboard({ setToken }) {
     const fetchHistory = async () => {
         try {
             const token = localStorage.getItem('token')
-            const response = await axios.get('http://localhost:5000/history', {
+            const url = import.meta.env.PROD ? '/api/history' : 'http://localhost:5000/history'
+            const response = await axios.get(url, {
                 headers: { Authorization: `Bearer ${token}` }
             })
             setHistory(response.data)
@@ -38,7 +39,8 @@ export default function Dashboard({ setToken }) {
         setShowHistory(false)
         try {
             const token = localStorage.getItem('token')
-            const response = await axios.post('http://localhost:5000/recommend',
+            const url = import.meta.env.PROD ? '/api/recommend' : 'http://localhost:5000/recommend'
+            const response = await axios.post(url,
                 { location },
                 { headers: { Authorization: `Bearer ${token}` } }
             )

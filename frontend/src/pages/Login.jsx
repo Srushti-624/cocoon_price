@@ -16,7 +16,8 @@ export default function Login({ setToken }) {
         setLoading(true)
         setError(null)
         try {
-            const response = await axios.post('http://localhost:5000/login', {
+            // In Vercel, requests to /api/... are routed to backend
+            const response = await axios.post(import.meta.env.PROD ? '/api/login' : 'http://localhost:5000/login', {
                 username,
                 password
             })
