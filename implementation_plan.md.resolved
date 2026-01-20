@@ -1,0 +1,59 @@
+# Implementation Plan - Cocoon Rearing Recommender System
+
+The goal is to build a web application that recommends the best start date for cocoon rearing for farmers in Bengaluru, Ramanagara, and Shidlaghatta.
+
+## User Review Required
+
+> [!IMPORTANT]
+> **Measurement of "Best" Date**: The current notebook predicts something (likely price or yield) based on weather. We will assume higher is better. We need to clarify *what* exactly is being predicted if it's not obvious from the code (it looked like `Market Price` or similar). I will assume we want to maximize this predicted value.
+
+> [!NOTE]
+> **Future Weather Data**: Since we don't have a live weather API key provided, I will implement a "Historical Average" approach for the future weather inputs. For example, to predict for "Next Week", I will use the average weather for that specific week from the past years in the dataset. This is a common strategy when live forecasts are unavailable or expensive.
+
+## Proposed Changes
+
+### Backend (Python/Flask)
+
+I will create a `backend` directory.
+
+#### [NEW] [train_model.py](file:///c:/Users/HP/Desktop/Capstone/cocoon_project/backend/train_model.py)
+- Script to read the CSVs (from the notebook) and train the `RandomForestRegressor`.
+- Saves the trained model to `model.pkl`.
+- Saves the label encoders (if any) to `encoders.pkl`.
+
+#### [NEW] [app.py](file:///c:/Users/HP/Desktop/Capstone/cocoon_project/backend/app.py)
+- **API Endpoint**: `/recommend`
+    - Input: `location` (bengaluru, ramanagara, siddlaghatta)
+    - Logic:
+        1. Determine the "next 30 days" dates.
+        2. For each date, "simulate" the weather (using historical averages for that day-of-year from the CSVs).
+        3. Feed this weather into `model.pkl`.
+        4. Collect predictions.
+        5. Return the date with the highest prediction.
+
+#### [NEW] [requirements.txt](file:///c:/Users/HP/Desktop/Capstone/cocoon_project/backend/requirements.txt)
+- `flask`, `pandas`, `scikit-learn`, `flask-cors`.
+
+### Frontend (React)
+
+I will create a `frontend` directory using Vite.
+
+#### [NEW] [frontend/](file:///c:/Users/HP/Desktop/Capstone/cocoon_project/frontend/)
+- **App.jsx**:
+    - Select Input for `Location` (Bengaluru, Ramanagara, Shidlaghatta).
+    - Button `Get Recommendation`.
+    - Display Area: Shows "Best Start Date: [Date]" and maybe a small chart of predicted scores for the next 30 days.
+
+## Verification Plan
+
+### Automated Tests
+- **Backend Test**: I will create a simple `test_app.py` to hit the `/recommend` endpoint and verify it returns a valid JSON response with a date.
+- **Frontend Test**: I will verify the React build succeeds.
+
+### Manual Verification
+- **User Verification**:
+    1. Run the backend.
+    2. Open the React app.
+    3. Select a city.
+    4. Click Recommend.
+    5. Verify a future date is shown (not a past date).

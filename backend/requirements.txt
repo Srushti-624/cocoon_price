@@ -1,0 +1,13 @@
+flask
+pandas
+scikit-learn
+flask-cors
+pandas
+numpy
+joblib
+scikit-learn
+xgboost
+flask-bcrypt
+flask-jwt-extended
+flask-pymongo
+dnspython
