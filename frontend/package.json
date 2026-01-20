@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "pip3 install -r ../requirements.txt --break-system-packages && tsc && vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
