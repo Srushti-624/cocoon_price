@@ -9,5 +9,8 @@
             "destination": "/frontend/dist/$1"
         }
     ],
-    "framework": "vite"
+    "framework": "vite",
+    "env": {
+        "PIP_BREAK_SYSTEM_PACKAGES": "1"
+    }
 }
