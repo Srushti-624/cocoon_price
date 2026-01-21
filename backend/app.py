@@ -198,14 +198,18 @@ def recommend():
         except Exception as e:
             return jsonify({"error": f"Encoding error: {str(e)}"}), 500
             
+        # Fix: Model expects feature names 'city', 'season' instead of 'city_code', 'season_code'
         features = pd.DataFrame([{
-            "city_code": city_code,
-            "season_code": season_code,
+            "city": city_code,   # Renamed from city_code
+            "season": season_code, # Renamed from season_code
             "avg_temp": weather_stats["avg_temp"],
             "max_temp": weather_stats["max_temp"],
             "avg_humidity": weather_stats["avg_humidity"],
             "rainfall": weather_stats["rainfall"]
         }])
+        
+        # Ensure correct column order
+        features = features[["city", "season", "avg_temp", "max_temp", "avg_humidity", "rainfall"]]
         
         predicted_price = model.predict(features)[0]
         harvest_date = start_date + timedelta(days=28)
