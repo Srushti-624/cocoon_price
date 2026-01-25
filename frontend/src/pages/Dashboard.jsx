@@ -20,8 +20,7 @@ export default function Dashboard({ setToken }) {
     const fetchHistory = async () => {
         try {
             const token = localStorage.getItem('token')
-            const url = import.meta.env.PROD ? '/api/history' : 'http://localhost:5000/history'
-            const response = await axios.get(url, {
+            const response = await axios.get('/api/history', {
                 headers: { Authorization: `Bearer ${token}` }
             })
             setHistory(response.data)
@@ -39,8 +38,7 @@ export default function Dashboard({ setToken }) {
         setShowHistory(false)
         try {
             const token = localStorage.getItem('token')
-            const url = import.meta.env.PROD ? '/api/recommend' : 'http://localhost:5000/recommend'
-            const response = await axios.post(url,
+            const response = await axios.post('/api/recommend',
                 { location },
                 { headers: { Authorization: `Bearer ${token}` } }
             )
@@ -156,7 +154,7 @@ export default function Dashboard({ setToken }) {
                                         >
                                             <option value="Bengaluru">Bengaluru</option>
                                             <option value="Ramanagara">Ramanagara</option>
-                                            <option value="Shidlaghatta">Shidlaghatta</option>
+                                            <option value="Siddlaghatta">Siddlaghatta</option>
                                         </select>
                                     </div>
 
@@ -224,11 +222,14 @@ export default function Dashboard({ setToken }) {
                         <h3 className="text-xl font-semibold mb-6 text-slate-200">Price Trend by Start Date</h3>
                         <div className="h-[300px] w-full">
                             <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={result.all_predictions}>
+                                {/* Sort predictions by date for the chart to show Day 1 -> Day 10 progress */}
+                                <LineChart data={[...result.all_predictions].sort((a, b) => new Date(a.start_date) - new Date(b.start_date))}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
                                     <XAxis
                                         dataKey="start_date"
-                                        hide={true} // Hide label clutter
+                                        tickFormatter={(val, index) => `Day ${index + 1}`}
+                                        stroke="#94a3b8"
+                                        interval={0}
                                     />
                                     <YAxis
                                         stroke="#94a3b8"
@@ -253,7 +254,7 @@ export default function Dashboard({ setToken }) {
                                         dataKey="predicted_price"
                                         stroke="#10b981"
                                         strokeWidth={3}
-                                        dot={false}
+                                        dot={true}
                                         activeDot={{ r: 6, fill: '#10b981', stroke: '#fff', strokeWidth: 2 }}
                                     />
                                 </LineChart>

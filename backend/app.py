@@ -179,7 +179,7 @@ def recommend():
     data = request.json
     location = data.get('location')
     
-    if location not in ["Bengaluru", "Ramanagara", "Shidlaghatta"]:
+    if location not in ["Bengaluru", "Ramanagara", "Shidlaghatta", "Siddlaghatta"]:
         return jsonify({"error": "Invalid location"}), 400
         
     results = []
@@ -192,7 +192,12 @@ def recommend():
             continue
             
         try:
-            city_code = le_city.transform([location])[0]
+            # Map new spelling to model's expected spelling
+            model_location = location
+            if location == "Siddlaghatta":
+                model_location = "Shidlaghatta"
+                
+            city_code = le_city.transform([model_location])[0]
             season_str = get_season(start_date.month)
             season_code = le_season.transform([season_str])[0]
         except Exception as e:
@@ -212,7 +217,7 @@ def recommend():
         features = features[["city", "season", "avg_temp", "max_temp", "avg_humidity", "rainfall"]]
         
         predicted_price = model.predict(features)[0]
-        harvest_date = start_date + timedelta(days=28)
+        harvest_date = start_date + timedelta(days=25) # Updated to 25 days cycle
         
         results.append({
             "start_date": start_date.strftime("%Y-%m-%d"),
