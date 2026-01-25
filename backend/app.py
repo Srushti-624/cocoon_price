@@ -68,7 +68,7 @@ def init_app():
     weather_files = {
         "Bengaluru": "bengaluru_weather_data.csv",
         "Ramanagara": "ramanagar_weather_data.csv",
-        "Shidlaghatta": "siddlaghatta_weather_data.csv"
+        "Siddlaghatta": "siddlaghatta_weather_data.csv"
     }
     for city, filename in weather_files.items():
         path = os.path.join(BASE_DIR, filename)
@@ -192,12 +192,9 @@ def recommend():
             continue
             
         try:
-            # Map new spelling to model's expected spelling
-            model_location = location
-            if location == "Siddlaghatta":
-                model_location = "Shidlaghatta"
-                
-            city_code = le_city.transform([model_location])[0]
+            # Model was trained on 'Siddlaghatta' directly, so no mapping needed.
+            # Using the location string directly.
+            city_code = le_city.transform([location])[0]
             season_str = get_season(start_date.month)
             season_code = le_season.transform([season_str])[0]
         except Exception as e:
