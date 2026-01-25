@@ -103,7 +103,7 @@ def get_historical_weather(city, start_date, days=25):
     
     return {
         "avg_temp": np.mean(temps),
-        "max_temp": np.max(temps) + 2, 
+        "max_temp": np.max(temps), 
         "avg_humidity": np.mean(humidities),
         "rainfall": np.sum(rainfalls)
     }
