@@ -203,10 +203,15 @@ def recommend():
         except Exception as e:
             return jsonify({"error": f"Encoding error: {str(e)}"}), 500
             
+        harvest_date = start_date + timedelta(days=25) # Updated to 25 days cycle
+        
+        # DEBUG: print(f"Features: City={location}, Month={harvest_date.month} (Harvest), Season={season_str}")
+
         # Fix: Model expects 'city', 'month', 'season' features
+        # CRITICAL FIX: Colab uses 'harvest_month' (end_date.month) for the 'month' feature!
         features = pd.DataFrame([{
             "city": city_code,   
-            "month": start_date.month, # Added 'month' feature
+            "month": harvest_date.month, # Matches Colab logic (Harvest Month)
             "season": season_code, 
             "avg_temp": weather_stats["avg_temp"],
             "max_temp": weather_stats["max_temp"],
@@ -221,7 +226,6 @@ def recommend():
         print(features.to_string())
         
         predicted_price = model.predict(features)[0]
-        harvest_date = start_date + timedelta(days=25) # Updated to 25 days cycle
         
         results.append({
             "start_date": start_date.strftime("%Y-%m-%d"),
