@@ -185,9 +185,9 @@ def recommend():
     results = []
     today = datetime.now().date()
     
-    # Updated to range(0, 10) to match Colab's logic (Today .. Today+9)
-    # Colab: for i in range(days_ahead) -> 0 to 9
-    for i in range(0, 10):
+    # Updated to wider range range(-2, 12) to ensure we catch Colab's optimal date
+    # even if there are timezone differences.
+    for i in range(-2, 12):
         start_date = today + timedelta(days=i)
         weather_stats = get_historical_weather(location, start_date)
         if not weather_stats:
