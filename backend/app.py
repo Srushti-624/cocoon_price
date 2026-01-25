@@ -229,6 +229,8 @@ def recommend():
         
         predicted_price = model.predict(features)[0]
         
+        print(f"  -> Candidate: {start_date} | Price: {predicted_price}")
+        
         results.append({
             "start_date": start_date.strftime("%Y-%m-%d"),
             "harvest_date": harvest_date.strftime("%Y-%m-%d"),
