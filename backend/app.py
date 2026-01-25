@@ -192,9 +192,12 @@ def recommend():
             continue
             
         try:
-            # Model was trained on 'Siddlaghatta' directly, so no mapping needed.
-            # Using the location string directly.
-            city_code = le_city.transform([location])[0]
+            # Model expects 'Ramanagar' instead of 'Ramanagara'
+            model_location = location
+            if location == "Ramanagara":
+                model_location = "Ramanagar"
+            
+            city_code = le_city.transform([model_location])[0]
             season_str = get_season(start_date.month)
             season_code = le_season.transform([season_str])[0]
         except Exception as e:
@@ -213,6 +216,9 @@ def recommend():
         
         # Ensure correct column order: city, month, season, ...
         features = features[["city", "month", "season", "avg_temp", "max_temp", "avg_humidity", "rainfall"]]
+        
+        print(f"DEBUG PREDICTING FOR {location} on {start_date}:")
+        print(features.to_string())
         
         predicted_price = model.predict(features)[0]
         harvest_date = start_date + timedelta(days=25) # Updated to 25 days cycle
